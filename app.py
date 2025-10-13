@@ -6,12 +6,16 @@ import os
 
 app = Flask(__name__)
 
+# Paths for models
+MODEL_DIR = "models"
+
 # Load scaler
 scaler = None
-for name in ("scalar.pkl", "scaler.pkl"):
-    if os.path.exists(name):
+for name in ("scaler.pkl", "scalar.pkl"):
+    scaler_path = os.path.join(MODEL_DIR, name)
+    if os.path.exists(scaler_path):
         try:
-            scaler = pickle.load(open(name, "rb"))
+            scaler = pickle.load(open(scaler_path, "rb"))
             break
         except:
             scaler = None
@@ -19,9 +23,10 @@ for name in ("scalar.pkl", "scaler.pkl"):
 # Load model
 model = None
 for candidate in ("newmodel.pkl", "model.pkl"):
-    if os.path.exists(candidate):
+    model_path = os.path.join(MODEL_DIR, candidate)
+    if os.path.exists(model_path):
         try:
-            model = pickle.load(open(candidate, "rb"))
+            model = pickle.load(open(model_path, "rb"))
             break
         except:
             model = None
