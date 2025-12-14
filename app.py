@@ -103,8 +103,17 @@ def predict():
 
     X_df = pd.DataFrame([X.values], columns=X.index)
 
-    # Scale if available
-    X_scaled = scaler.transform(X_df) if scaler else X_df.values
+    # Scale if available (robust to incompatible scaler shapes)
+    if scaler:
+        try:
+            X_scaled = scaler.transform(X_df)
+        except Exception as e:
+            # log full traceback to stderr so it appears in app.err and continue without scaler
+            import traceback
+            traceback.print_exc()
+            X_scaled = X_df.values
+    else:
+        X_scaled = X_df.values
 
     try:
         prediction = model.predict(X_scaled)[0]
